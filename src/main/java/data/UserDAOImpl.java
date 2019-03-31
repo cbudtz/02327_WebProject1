@@ -1,6 +1,7 @@
 package data;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,16 +18,10 @@ public class UserDAOImpl implements IUserDAO {
         try (Connection connection = createConnection()){
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM users WHERE userid = " + userId);
-
             if (resultSet.next()) {
-                IUserDTO user = new UserDTO();
-                user.setUserName(resultSet.getString("userName"));
-                user.setIni(resultSet.getString("ini"));
-                user.setUserId(resultSet.getInt("userId"));
-                return user;
+                return makeUserFromResultSet(resultSet);
             }
             return null;
-
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DALException(e.getMessage());
@@ -34,9 +29,18 @@ public class UserDAOImpl implements IUserDAO {
 
     }
 
+    private IUserDTO makeUserFromResultSet(ResultSet resultSet) throws SQLException {
+        IUserDTO user = new UserDTO();
+        user.setUserName(resultSet.getString("userName"));
+        user.setIni(resultSet.getString("ini"));
+        user.setUserId(resultSet.getInt("userId"));
+        List<String> roles = Arrays.asList(resultSet.getString("roles").split(";"));
+        user.setRoles(roles);
+        return user;
+    }
+
     @Override
     public IUserDTO getUserByIni(String initials) throws DALException {
-        //TODO Implement this - Should retrieve a user from db and parse it to a UserDTO
         try (Connection connection = createConnection()){
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM users WHERE ini LIKE '" + initials + "'");
@@ -56,8 +60,18 @@ public class UserDAOImpl implements IUserDAO {
 
     @Override
     public List<IUserDTO> getUserList() throws DALException {
-        //TODO Implement this - Should retrieve ALL users from db and parse the resultset to a List of UserDTO's.
-        return null;
+        try (Connection connection = createConnection()){
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM users");
+            List<IUserDTO> users = new ArrayList<>();
+            while (resultSet.next()) {
+                users.add(makeUserFromResultSet(resultSet));
+            }
+            return users;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DALException(e.getMessage());
+        }
     }
 
     @Override
