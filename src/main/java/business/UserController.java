@@ -5,8 +5,6 @@ import data.IUserDTO;
 import data.UserDAOImpl;
 import data.UserDTO;
 
-import java.util.NoSuchElementException;
-
 public class UserController implements IUserController {
     private IUserDAO userDAO = new UserDAOImpl();
 

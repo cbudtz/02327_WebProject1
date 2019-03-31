@@ -24,6 +24,7 @@
         IUserDTO test = userController.getUser(i); //
         out.println("Fandt bruger: " + i + " <br>");
         out.println("<table border>");
+        //TODO finish implementation
         out.println("<tr><th>Brugernavn</th></tr>");
         out.println("<tr><td> " + test.getUserName() + "</td></tr>");
         out.println("</table>");
