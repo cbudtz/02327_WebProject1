@@ -9,21 +9,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Test</title>
+    <title>Brugerprogrammet</title>
 </head>
 <body>
 <h1>
     Det store brugerprogram!
 </h1>
-
+<!-- Indlejret javakode -->
 <%
     String idString = request.getParameter("id"); //tag en parameter fra adresselinjen
     IUserController userController = new UserController();
     if (idString!=null) {
-        int i = Integer.parseInt(idString);
-        IUserDTO test = userController.getUser(i);
-        out.write("Fandt bruger: " + i + " <br>");
-        out.write("Brugernavn: " + test.getUserName());
+        int i = Integer.parseInt(idString); //Omsæt til Integer
+        IUserDTO test = userController.getUser(i); //
+        out.println("Fandt bruger: " + i + " <br>");
+        out.println("<table border>");
+        out.println("<tr><th>Brugernavn</th></tr>");
+        out.println("<tr><td> " + test.getUserName() + "</td></tr>");
+        out.println("</table>");
     }
 %>
 <h2>
